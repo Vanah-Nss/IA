@@ -33,9 +33,12 @@ export default function ResetPasswordForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={styles.form}>
-      <h3 style={styles.title}>
-        <FaLock style={{ marginRight: 8, color: "#0066ff" }} />
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto mt-16 p-8 bg-white rounded-xl shadow-lg font-sans"
+    >
+      <h3 className="mb-6 text-2xl font-extrabold text-center flex justify-center items-center text-gray-900">
+        <FaLock className="mr-2 text-blue-600" />
         Réinitialiser mot de passe
       </h3>
 
@@ -45,19 +48,23 @@ export default function ResetPasswordForm() {
         value={newPassword}
         onChange={(e) => setNewPassword(e.target.value)}
         required
-        style={styles.input}
+        className="w-full p-4 mb-5 text-gray-900 text-base rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
 
-      <button disabled={loading} type="submit" style={styles.button}>
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full p-4 text-white text-lg font-bold rounded-lg shadow-md transition
+          ${loading ? "bg-blue-500 cursor-not-allowed opacity-70" : "bg-blue-700 hover:bg-blue-800 cursor-pointer"}`}
+      >
         {loading ? "Traitement..." : "Réinitialiser"}
       </button>
 
       {message && (
         <p
-          style={{
-            ...styles.message,
-            color: message.startsWith("✅") ? "green" : "red",
-          }}
+          className={`mt-5 font-semibold text-center ${
+            message.startsWith("✅") ? "text-green-600" : "text-red-600"
+          }`}
         >
           {message}
         </p>
@@ -65,53 +72,3 @@ export default function ResetPasswordForm() {
     </form>
   );
 }
-
-const styles = {
-  form: {
-    maxWidth: 400,
-    margin: "60px auto",
-    padding: 30,
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    boxShadow: "0 8px 25px rgba(0,0,0,0.12)",
-  },
-  title: {
-    marginBottom: 20,
-    fontWeight: "700",
-    color: "#222",
-    textAlign: "center",
-    fontSize: 24,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  input: {
-    width: "100%",
-    padding: 14,
-    marginBottom: 20,
-    fontSize: 16,
-    borderRadius: 8,
-    border: "1.5px solid #ddd",
-    outline: "none",
-  },
-  button: {
-    width: "100%",
-    padding: 14,
-    fontSize: 18,
-    backgroundColor: "#0066ff",
-    color: "white",
-    border: "none",
-    borderRadius: 10,
-    cursor: "pointer",
-    fontWeight: "700",
-    boxShadow: "0 6px 20px rgba(0,102,255,0.5)",
-    transition: "background-color 0.3s",
-  },
-  message: {
-    marginTop: 15,
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 16,
-  },
-};

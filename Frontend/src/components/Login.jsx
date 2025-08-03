@@ -1,14 +1,21 @@
 import React, { useState, useRef } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUserAlt, FaLock, FaMoon, FaSun, FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  FaUserAlt,
+  FaLock,
+  FaMoon,
+  FaSun,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRole } from "../components/RoleContext";
-
 const LOGIN_MUTATION = gql`
-  mutation TokenAuth($username: String!, $password: String!) {
-    tokenAuth(username: $username, password: $password) {
+  mutation TokenAuth($username: String!, $password: String!, $captcha: String!) {
+    tokenAuth(username: $username, password: $password, captcha: $captcha) {
       token
+      refreshToken
       user {
         id
         username
@@ -18,6 +25,8 @@ const LOGIN_MUTATION = gql`
     }
   }
 `;
+
+
 
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -35,8 +44,8 @@ export default function Login() {
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleShowPassword = () => setShowPassword(!showPassword);
-  const onCaptchaChange = (value) => setCaptchaValue(value);
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
@@ -73,57 +82,49 @@ export default function Login() {
 
   return (
     <div
-      style={{
-        ...styles.wrapper,
-        background: darkMode
-          ? "linear-gradient(135deg, #001f3f, #003366)"
-          : "linear-gradient(135deg, #eaf0f6, #d3e0ee)",
-      }}
+      className={`min-h-screen w-full flex items-center justify-center px-4 transition-all duration-500 ${
+        darkMode ? "bg-gradient-to-br from-blue-950 to-blue-800" : "bg-gradient-to-br from-blue-100 to-blue-200"
+      }`}
     >
       <form
         onSubmit={handleSubmit}
-        style={{
-          ...styles.form,
-          color: darkMode ? "#cce0ff" : "#003366",
-          backgroundColor: darkMode ? "#001f3f" : "#ffffff",
-        }}
+        className={`w-full max-w-md rounded-xl shadow-xl p-8 ${
+          darkMode ? "bg-blue-900 text-blue-100" : "bg-white text-blue-900"
+        }`}
       >
-        <div style={styles.topBar}>
-          <h2 style={styles.title}>Connexion</h2>
-          <button type="button" onClick={toggleDarkMode} style={styles.toggle}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-center w-full">Connectez-vous à votre Compte</h2>
+          <button
+            type="button"
+            onClick={toggleDarkMode}
+            className="text-xl"
+          >
             {darkMode ? <FaSun /> : <FaMoon />}
           </button>
         </div>
 
         <div
-          style={{
-            ...styles.inputGroup,
-            backgroundColor: darkMode ? "#003366" : "#f2f6fb",
-          }}
+          className={`flex items-center gap-2 rounded-lg px-4 py-3 mb-4 ${
+            darkMode ? "bg-blue-800" : "bg-blue-50"
+          }`}
         >
-          <FaUserAlt
-            style={{ ...styles.icon, color: darkMode ? "#99c2ff" : "#003366" }}
-          />
+          <FaUserAlt />
           <input
             name="username"
             placeholder="Nom d'utilisateur"
             value={form.username}
             onChange={handleChange}
             required
-            style={{ ...styles.input, color: darkMode ? "#cce0ff" : "#000" }}
+            className="flex-1 bg-transparent outline-none text-sm"
           />
         </div>
 
         <div
-          style={{
-            ...styles.inputGroup,
-            backgroundColor: darkMode ? "#003366" : "#f2f6fb",
-            position: "relative",
-          }}
+          className={`flex items-center gap-2 rounded-lg px-4 py-3 mb-4 relative ${
+            darkMode ? "bg-blue-800" : "bg-blue-50"
+          }`}
         >
-          <FaLock
-            style={{ ...styles.icon, color: darkMode ? "#99c2ff" : "#003366" }}
-          />
+          <FaLock />
           <input
             name="password"
             type={showPassword ? "text" : "password"}
@@ -131,33 +132,20 @@ export default function Login() {
             value={form.password}
             onChange={handleChange}
             required
-            style={{
-              ...styles.input,
-              color: darkMode ? "#cce0ff" : "#000",
-              paddingRight: 40,
-            }}
+            className="flex-1 bg-transparent outline-none text-sm pr-10"
           />
           <button
             type="button"
             onClick={toggleShowPassword}
-            style={{
-              position: "absolute",
-              right: 10,
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: darkMode ? "#99c2ff" : "#003366",
-              fontSize: 18,
-            }}
-            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-lg"
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
         </div>
 
-        <div style={styles.recaptcha}>
+        <div className="mb-5 flex justify-center">
           <ReCAPTCHA
-            sitekey="6LdGjogrAAAAAB0fDIws2ISyda1dTdi-uIjmC8sy" // ← remplace par ta vraie clé
+            sitekey="6LdGjogrAAAAAB0fDIws2ISyda1dTdi-uIjmC8sy"
             onChange={onCaptchaChange}
             ref={recaptchaRef}
           />
@@ -166,32 +154,33 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          style={{
-            ...styles.button,
-            backgroundColor: darkMode ? "#00264d" : "#003366",
-            opacity: loading ? 0.7 : 1,
-          }}
+          className={`w-full py-3 rounded-lg font-semibold text-white transition-all ${
+            loading
+              ? "opacity-70 cursor-not-allowed"
+              : "hover:scale-[1.02]"
+          } ${
+            darkMode ? "bg-blue-700" : "bg-blue-800"
+          }`}
         >
           {loading ? "Connexion..." : "Se connecter"}
         </button>
 
         {message && (
           <p
-            style={{
-              ...styles.message,
-              color: message.startsWith("✅") ? "#4caf50" : "#f44336",
-            }}
+            className={`text-center mt-4 font-medium ${
+              message.startsWith("✅") ? "text-green-500" : "text-red-500"
+            }`}
           >
             {message}
           </p>
         )}
 
-        <div style={styles.linksContainer}>
-        
-        
+        <div className="mt-6 text-center">
           <Link
             to="/forgot-password"
-            style={{ ...styles.link, color: darkMode ? "#99c2ff" : "#003366" }}
+            className={`text-sm font-semibold underline ${
+              darkMode ? "text-blue-300" : "text-blue-800"
+            }`}
           >
             Mot de passe oublié ?
           </Link>
@@ -200,93 +189,3 @@ export default function Login() {
     </div>
   );
 }
-
-const styles = {
-  wrapper: {
-    minHeight: "100vh",
-    width: "100vw",              // largeur complète de la fenêtre
-    display: "flex",
-    justifyContent: "center",    // centrer horizontalement
-    alignItems: "center",        // centrer verticalement
-    background: "linear-gradient(135deg, #e0f2ff, #f5faff)", // fond dégradé clair
-    padding: "20px",
-    fontFamily: "'Segoe UI', 'Inter', sans-serif",
-    margin: 0,                   // supprime marges parasites
-  },
-  form: {
-    padding: 36,
-    borderRadius: 14,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.12)",
-    width: "90%",                // prend 90% de l'écran sur petits écrans
-    maxWidth: 480,               // mais pas plus de 480px
-    backgroundColor: "#fff",
-    display: "flex",
-    flexDirection: "column",
-  },
-  topBar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  toggle: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    fontSize: 18,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    textAlign: "center",
-    width: "100%",
-  },
-  inputGroup: {
-    display: "flex",
-    alignItems: "center",
-    borderRadius: 10,
-    padding: "10px 15px",
-    marginBottom: 16,
-  },
-  input: {
-    width: "100%",
-    marginLeft: 10,
-    border: "none",
-    outline: "none",
-    fontSize: 16,
-    backgroundColor: "transparent",
-  },
-  icon: {
-    fontSize: 18,
-  },
-  recaptcha: {
-    marginBottom: 20,
-    display: "flex",
-    justifyContent: "center",
-  },
-  button: {
-    width: "100%",
-    padding: 14,
-    fontSize: 18,
-    color: "white",
-    border: "none",
-    borderRadius: 10,
-    cursor: "pointer",
-    fontWeight: "700",
-    boxShadow: "0 6px 20px rgba(0,51,102,0.5)",
-  },
-  message: {
-    marginTop: 16,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  linksContainer: {
-    marginTop: 24,
-    textAlign: "center",
-  },
-  link: {
-    fontWeight: "600",
-    textDecoration: "none",
-    fontSize: 15,
-  },
-};

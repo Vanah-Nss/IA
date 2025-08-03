@@ -7,7 +7,7 @@ import ResetPasswordRequest from "./components/ResetPasswordRequest";
 import ResetPasswordForm from "./components/ResetPasswordForm";
 import Dashboard from "./components/Dashboard";
 import Home from "./components/Home";
-import Contact from "./components/Contact";
+
 
 export default function App() {
   return (
@@ -18,8 +18,8 @@ export default function App() {
       <Route path="/reset-password" element={<ResetPasswordForm />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="*" element={<Login />} />
+
+      <Route path="*" element={<Home />} />
     </Routes>
   );
 }

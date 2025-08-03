@@ -33,10 +33,13 @@ export default function ResetPasswordRequest() {
   };
 
   return (
-    <div style={styles.wrapper}>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h3 style={styles.title}>
-          <FaEnvelope style={{ marginRight: 8, color: "#003366" }} />
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-200 flex justify-center items-center p-5 font-sans">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md w-full bg-white rounded-2xl shadow-lg p-9 text-blue-900"
+      >
+        <h3 className="mb-7 font-extrabold text-center text-2xl flex justify-center items-center">
+          <FaEnvelope className="mr-2 text-blue-700" />
           Mot de passe oublié ?
         </h3>
 
@@ -46,29 +49,37 @@ export default function ResetPasswordRequest() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={styles.input}
+          className="w-full p-4 mb-5 text-blue-900 text-base rounded-xl bg-blue-100 border border-blue-300 outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
 
-        <button type="submit" disabled={loading} style={styles.button}>
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full p-4 text-white text-lg font-bold rounded-xl shadow-md transition ${
+            loading
+              ? "bg-blue-600 cursor-not-allowed opacity-70"
+              : "bg-blue-800 hover:bg-blue-900 cursor-pointer"
+          }`}
+        >
           {loading ? "Envoi..." : "Envoyer le lien"}
         </button>
 
         {message && (
           <p
-            style={{
-              marginTop: 15,
-              color: message.startsWith("✅") ? "#4caf50" : "#f44336",
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
+            className={`mt-5 font-semibold text-center ${
+              message.startsWith("✅") ? "text-green-600" : "text-red-600"
+            }`}
           >
             {message}
           </p>
         )}
 
-        <div style={styles.linksContainer}>
-          <Link to="/login" style={styles.link}>
-            <FaArrowLeft style={{ marginRight: 6 }} />
+        <div className="mt-8 text-center text-blue-800">
+          <Link
+            to="/login"
+            className="inline-flex items-center font-semibold hover:underline"
+          >
+            <FaArrowLeft className="mr-2" />
             Retour vers Connexion
           </Link>
         </div>
@@ -76,70 +87,3 @@ export default function ResetPasswordRequest() {
     </div>
   );
 }
-
-const styles = {
-  wrapper: {
-    minHeight: "100vh",
-    background: "linear-gradient(135deg, #eaf0f6, #d3e0ee)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    fontFamily: "'Segoe UI', sans-serif",
-  },
-  form: {
-    maxWidth: 420,
-    width: "100%",
-    padding: 36,
-    backgroundColor: "#ffffff",
-    borderRadius: 14,
-    boxShadow: "0 10px 25px rgba(0,0,0,0.12)",
-    color: "#003366",
-  },
-  title: {
-    marginBottom: 25,
-    fontWeight: "700",
-    color: "#003366",
-    textAlign: "center",
-    fontSize: 24,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  input: {
-    width: "100%",
-    padding: 14,
-    marginBottom: 20,
-    fontSize: 16,
-    borderRadius: 8,
-    backgroundColor: "#f2f6fb",
-    color: "#003366",
-    border: "1.5px solid #ccd8e1",
-    outline: "none",
-  },
-  button: {
-    width: "100%",
-    padding: 14,
-    fontSize: 18,
-    backgroundColor: "#003366",
-    color: "white",
-    border: "none",
-    borderRadius: 10,
-    cursor: "pointer",
-    fontWeight: "700",
-    boxShadow: "0 6px 20px rgba(0,51,102,0.4)",
-    transition: "background-color 0.3s",
-  },
-  linksContainer: {
-    marginTop: 30,
-    textAlign: "center",
-  },
-  link: {
-    color: "#003366",
-    textDecoration: "none",
-    fontWeight: "600",
-    fontSize: 15,
-    display: "inline-flex",
-    alignItems: "center",
-  },
-};
